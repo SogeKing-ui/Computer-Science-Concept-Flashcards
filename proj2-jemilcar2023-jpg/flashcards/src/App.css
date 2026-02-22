@@ -1,41 +1,30 @@
-.App {
-  min-height: 100vh;
+.guess-area {
   display: flex;
-  flex-direction: column;
-  align-items: center;   /* center horizontally */
-  justify-content: center; /* center vertically */
-
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
+  gap: 10px;
 }
 
-.header {
-  text-align: center;
-  max-width: 700px;
+.guess-area input {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
 }
 
-.desc {
-  opacity: 0.8;
-  margin-top: 8px;
+.correct {
+  color: #4caf50;
+  font-weight: bold;
 }
 
-.count {
-  margin-top: 10px;
-  font-weight: 600;
-  opacity: 0.85;
+.wrong {
+  color: #f44336;
+  font-weight: bold;
 }
 
-.main {
+.nav-buttons {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   gap: 16px;
 }
 
-.next-btn {
-  border-radius: 10px;
-  padding: 10px 16px;
-  border: 1px solid transparent;
-  cursor: pointer;
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
