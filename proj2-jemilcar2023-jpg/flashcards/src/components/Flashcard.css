@@ -1,0 +1,123 @@
+/* The outer card sets the size + perspective */
+.card {
+  width: min(520px, 90vw);
+  height: 220px;
+  border-radius: 16px;
+  cursor: pointer;
+  user-select: none;
+
+  /* this creates the 3D depth */
+  perspective: 1000px;
+}
+
+/* The inner wrapper is what actually rotates */
+.card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  transform-style: preserve-3d;
+  transition: transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* When flipped, rotate the inner wrapper */
+.card-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+/* Both faces sit on top of each other */
+.card-face {
+  position: absolute;
+  inset: 0;
+  padding: 24px;
+
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  /* CRITICAL: hides the “mirror” backside */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* Front is default */
+.card-front {
+  transform: rotateY(0deg);
+}
+
+/* Back is rotated so it shows after the flip */
+.card-back {
+  transform: rotateY(180deg);
+}
+
+.hint {
+  margin-top: 14px;
+  font-size: 0.9rem;
+  opacity: 0.6;
+}
+
+.badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  font-size: 0.85rem;
+  padding: 6px 10px;
+  border-radius: 999px;
+  opacity: 0.9;
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+/* Make sure faces can position the badge */
+.card-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 24px;
+  backface-visibility: hidden;
+}
+
+/* Category color styles */
+.card-React .badge {
+  background: rgba(97, 218, 251, 0.18);
+}
+
+.card-JS .badge {
+  background: rgba(240, 219, 79, 0.18);
+}
+
+/* Soft category glow on the whole card */
+
+.card-React {
+  box-shadow: 0 0 18px rgba(97, 218, 251, 0.25);
+}
+
+.card-JS {
+  box-shadow: 0 0 18px rgba(240, 219, 79, 0.25);
+}
+
+.card-React:hover {
+  box-shadow: 0 0 26px rgba(97, 218, 251, 0.4);
+}
+
+.card-JS:hover {
+  box-shadow: 0 0 26px rgba(240, 219, 79, 0.4);
+}
+
+.card-img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  margin-bottom: 12px;
+  opacity: 0.95;
+}
