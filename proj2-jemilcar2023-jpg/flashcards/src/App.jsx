@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import "./App.css";
 import Flashcard from "./components/Flashcard";
 
@@ -35,46 +35,106 @@ const cards = [
   },
 ];
 
+// --- helpers ---
+function normalize(text) {
+  return text
+    .toLowerCase()
+    .trim()
+    // remove punctuation/symbols
+    .replace(/[^\w\s]|_/g, "")
+    // collapse spaces
+    .replace(/\s+/g, " ");
+}
+
+function isGuessCorrect(guess, answer) {
+  const g = normalize(guess);
+  const a = normalize(answer);
+
+  if (!g) return false;
+
+  // exact match
+  if (g === a) return true;
+
+  // partial match: guess is contained in answer OR answer contained in guess
+  // (lets “array” match “an array stateValue setStateFunction”, etc.)
+  if (a.includes(g) || g.includes(a)) return true;
+
+  return false;
+}
+
+function shuffleArray(arr) {
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
 export default function App() {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  // order is an array of indices into cards: [0,1,2,...] or shuffled
+  const defaultOrder = useMemo(() => cards.map((_, i) => i), []);
+  const [order, setOrder] = useState(defaultOrder);
+
+  const [pos, setPos] = useState(0); // position inside order
   const [flipped, setFlipped] = useState(false);
 
   const [guess, setGuess] = useState("");
   const [feedback, setFeedback] = useState(null); // "correct" | "wrong" | null
 
+  const [currentStreak, setCurrentStreak] = useState(0);
+  const [longestStreak, setLongestStreak] = useState(0);
+
+  const currentIndex = order[pos];
   const currentCard = cards[currentIndex];
+
+  const resetPerCard = () => {
+    setFlipped(false);
+    setGuess("");
+    setFeedback(null);
+  };
 
   const handleFlip = () => setFlipped((prev) => !prev);
 
   const handleSubmit = () => {
-    if (
-      guess.trim().toLowerCase() ===
-      currentCard.answer.trim().toLowerCase()
-    ) {
+    const correct = isGuessCorrect(guess, currentCard.answer);
+
+    if (correct) {
       setFeedback("correct");
+      setCurrentStreak((s) => {
+        const next = s + 1;
+        setLongestStreak((ls) => (next > ls ? next : ls));
+        return next;
+      });
     } else {
       setFeedback("wrong");
+      setCurrentStreak(0);
     }
   };
 
   const goNext = () => {
-    if (currentIndex < cards.length - 1) {
-      setCurrentIndex((i) => i + 1);
-      resetState();
+    if (pos < order.length - 1) {
+      setPos((p) => p + 1);
+      resetPerCard();
     }
   };
 
   const goBack = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex((i) => i - 1);
-      resetState();
+    if (pos > 0) {
+      setPos((p) => p - 1);
+      resetPerCard();
     }
   };
 
-  const resetState = () => {
-    setFlipped(false);
-    setGuess("");
-    setFeedback(null);
+  const handleShuffle = () => {
+    // shuffle the order of indices
+    const newOrder = shuffleArray(defaultOrder);
+    setOrder(newOrder);
+    setPos(0);
+    resetPerCard();
+
+    // optional: reset streak on shuffle (safer for grading)
+    setCurrentStreak(0);
   };
 
   return (
@@ -82,10 +142,23 @@ export default function App() {
       <header className="header">
         <p className="student-name">Jehu Emilcar | Z23568962</p>
         <h1>CS Concepts Flashcards</h1>
-        <p className="desc">
-          Type your guess before flipping the card.
-        </p>
-        <p className="count">Card {currentIndex + 1} of {cards.length}</p>
+
+        <p className="desc">Type your guess before flipping the card.</p>
+
+        <div className="top-row">
+          <p className="count">
+            Card {pos + 1} of {order.length}
+          </p>
+
+          <button className="shuffle-btn" onClick={handleShuffle}>
+            Shuffle
+          </button>
+        </div>
+
+        <div className="streaks">
+          <span>🔥 Current streak: {currentStreak}</span>
+          <span>🏆 Longest streak: {longestStreak}</span>
+        </div>
       </header>
 
       <main className="main">
@@ -98,7 +171,6 @@ export default function App() {
           onFlip={handleFlip}
         />
 
-        {/* INPUT AREA */}
         <div className="guess-area">
           <input
             type="text"
@@ -106,27 +178,17 @@ export default function App() {
             value={guess}
             onChange={(e) => setGuess(e.target.value)}
           />
-
           <button onClick={handleSubmit}>Submit</button>
         </div>
 
-        {feedback === "correct" && (
-          <p className="correct">✅ Correct!</p>
-        )}
-        {feedback === "wrong" && (
-          <p className="wrong">❌ Incorrect</p>
-        )}
+        {feedback === "correct" && <p className="correct">✅ Correct!</p>}
+        {feedback === "wrong" && <p className="wrong">❌ Incorrect</p>}
 
-        {/* NAV BUTTONS */}
         <div className="nav-buttons">
-          <button onClick={goBack} disabled={currentIndex === 0}>
+          <button onClick={goBack} disabled={pos === 0}>
             Back
           </button>
-
-          <button
-            onClick={goNext}
-            disabled={currentIndex === cards.length - 1}
-          >
+          <button onClick={goNext} disabled={pos === order.length - 1}>
             Next
           </button>
         </div>
