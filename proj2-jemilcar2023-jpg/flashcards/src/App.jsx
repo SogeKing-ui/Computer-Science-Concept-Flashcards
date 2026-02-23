@@ -169,6 +169,7 @@ export default function App() {
           image={currentCard.image}
           flipped={flipped}
           onFlip={handleFlip}
+          status={feedback}
         />
 
         <div className="guess-area">

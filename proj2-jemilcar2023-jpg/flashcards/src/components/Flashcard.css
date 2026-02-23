@@ -74,26 +74,43 @@
   border: 1px solid rgba(255,255,255,0.18);
 }
 
-/* Make sure faces can position the badge */
-.card-face {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 24px;
-  backface-visibility: hidden;
-}
-
 /* Category color styles */
-.card-React .badge {
+
+.card-react .badge {
   background: rgba(97, 218, 251, 0.18);
 }
 
-.card-JS .badge {
+.card-js .badge {
   background: rgba(240, 219, 79, 0.18);
+}
+
+.card-css .badge {
+  background: rgba(86, 156, 214, 0.18);
+}
+
+/* Soft category glow on the whole card */
+.card-react {
+  box-shadow: 0 0 18px rgba(97, 218, 251, 0.25);
+}
+
+.card-js {
+  box-shadow: 0 0 18px rgba(240, 219, 79, 0.25);
+}
+
+.card-css {
+  box-shadow: 0 0 18px rgba(86, 156, 214, 0.25);
+}
+
+.card-react:hover {
+  box-shadow: 0 0 26px rgba(97, 218, 251, 0.4);
+}
+
+.card-js:hover {
+  box-shadow: 0 0 26px rgba(240, 219, 79, 0.4);
+}
+
+.card-css:hover {
+  box-shadow: 0 0 26px rgba(86, 156, 214, 0.4);
 }
 
 /* Soft category glow on the whole card */
@@ -120,4 +137,13 @@
   object-fit: contain;
   margin-bottom: 12px;
   opacity: 0.95;
+}
+
+/* Submit feedback on the card itself */
+.status-correct .card-face {
+  border: 2px solid rgba(76, 175, 80, 0.9);
+}
+
+.status-wrong .card-face {
+  border: 2px solid rgba(244, 67, 54, 0.9);
 }
