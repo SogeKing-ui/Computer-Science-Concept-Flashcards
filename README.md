@@ -2,7 +2,7 @@
 
 Submitted by: Jehu Emilcar
 
-This web app: **insert description**
+This web app: This web app is an interactive flashcard system designed to help users practice computer science concepts. Users can type guesses before flipping each card, receive feedback on their answers, move forward and backward through the deck, shuffle cards, track streaks, and remove mastered cards from the study pool. The app makes studying more engaging and efficient.
 
 Time spent: 3 hours spent in total
 
@@ -21,7 +21,6 @@ The following **required** functionality is completed:
 
 The following **optional** features are implemented:
 
-
 - [x] Users can use a shuffle button to randomize the order of the cards
   - Cards should remain in the same sequence (**NOT** randomized) unless the shuffle button is clicked 
   - Cards should change to a random sequence once the shuffle button is clicked
@@ -39,13 +38,19 @@ The following **optional** features are implemented:
 
 The following **additional** features are implemented:
 
-* [ ] List anything else that you added to improve the site's functionality!
+* [x] List anything else that you added to improve the site's functionality:
+    - Visual color feedback on cards for correct/incorrect guesses
+    - Disabled submit button for empty input
+    - Keyboard-accessible flashcard flipping
+    - End-of-deck completion screen with reset button
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+https://www.loom.com/share/6e248b83ffa64c1db4ce8b394aec8089
+
+## Gif
 
 <!-- Replace this with whatever GIF tool you used! -->
 GIF created with ...  
@@ -56,7 +61,7 @@ GIF created with ...
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+One challenge was managing multiple state variables at once, such as tracking the current card position, user input, streak counters, shuffled order, and mastered cards without causing bugs or unexpected behavior. Ensuring that navigation buttons correctly disabled at the beginning and end of the deck also required careful logic. Another challenge was implementing flexible answer checking so that slight differences in user input (such as capitalization or punctuation) would still count as correct. Finally, handling edge cases when all cards were mastered and resetting the deck required additional conditional logic to prevent crashes.
 
 ## License
 
