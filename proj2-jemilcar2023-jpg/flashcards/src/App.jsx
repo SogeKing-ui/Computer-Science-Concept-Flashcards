@@ -177,9 +177,11 @@ export default function App() {
             type="text"
             placeholder="Enter your guess..."
             value={guess}
-            onChange={(e) => setGuess(e.target.value)}
+            onChange={(e) => {setGuess(e.target.value);
+              setFeedback(null);
+            }}
           />
-          <button onClick={handleSubmit}>Submit</button>
+          <button onClick={handleSubmit} disabled={!guess.trim()}>Submit</button>
         </div>
 
         {feedback === "correct" && <p className="correct">✅ Correct!</p>}
