@@ -40,9 +40,7 @@ function normalize(text) {
   return text
     .toLowerCase()
     .trim()
-    // remove punctuation/symbols
     .replace(/[^\w\s]|_/g, "")
-    // collapse spaces
     .replace(/\s+/g, " ");
 }
 
@@ -51,14 +49,8 @@ function isGuessCorrect(guess, answer) {
   const a = normalize(answer);
 
   if (!g) return false;
-
-  // exact match
   if (g === a) return true;
-
-  // partial match: guess is contained in answer OR answer contained in guess
-  // (lets “array” match “an array stateValue setStateFunction”, etc.)
   if (a.includes(g) || g.includes(a)) return true;
-
   return false;
 }
 
@@ -72,11 +64,10 @@ function shuffleArray(arr) {
 }
 
 export default function App() {
-  // order is an array of indices into cards: [0,1,2,...] or shuffled
   const defaultOrder = useMemo(() => cards.map((_, i) => i), []);
   const [order, setOrder] = useState(defaultOrder);
 
-  const [pos, setPos] = useState(0); // position inside order
+  const [pos, setPos] = useState(0);
   const [flipped, setFlipped] = useState(false);
 
   const [guess, setGuess] = useState("");
@@ -85,8 +76,8 @@ export default function App() {
   const [currentStreak, setCurrentStreak] = useState(0);
   const [longestStreak, setLongestStreak] = useState(0);
 
-  const currentIndex = order[pos];
-  const currentCard = cards[currentIndex];
+  // mastered stores indices of cards that are mastered
+  const [mastered, setMastered] = useState([]);
 
   const resetPerCard = () => {
     setFlipped(false);
@@ -97,6 +88,9 @@ export default function App() {
   const handleFlip = () => setFlipped((prev) => !prev);
 
   const handleSubmit = () => {
+    const currentIndex = order[pos];
+    const currentCard = cards[currentIndex];
+
     const correct = isGuessCorrect(guess, currentCard.answer);
 
     if (correct) {
@@ -127,15 +121,87 @@ export default function App() {
   };
 
   const handleShuffle = () => {
-    // shuffle the order of indices
-    const newOrder = shuffleArray(defaultOrder);
+    // Only shuffle non-mastered cards (so mastered stay removed)
+    const remaining = defaultOrder.filter((i) => !mastered.includes(i));
+    const newOrder = shuffleArray(remaining);
+
     setOrder(newOrder);
     setPos(0);
     resetPerCard();
-
-    // optional: reset streak on shuffle (safer for grading)
     setCurrentStreak(0);
   };
+
+  const handleMaster = () => {
+    if (order.length === 0) return;
+
+    const currentIndex = order[pos];
+
+    // add to mastered if not already there
+    setMastered((prev) => (prev.includes(currentIndex) ? prev : [...prev, currentIndex]));
+
+    // remove from current order (pool)
+    const newOrder = order.filter((i) => i !== currentIndex);
+
+    setOrder(newOrder);
+
+    // adjust pos so we stay in bounds
+    // if we removed the last card, move pos back one
+    setPos((prevPos) => {
+      const nextPos = prevPos >= newOrder.length ? Math.max(0, newOrder.length - 1) : prevPos;
+      return nextPos;
+    });
+
+    // reset UI for next card
+    resetPerCard();
+    setCurrentStreak(0);
+  };
+
+  // If no cards left, show a finished state
+  if (order.length === 0) {
+    return (
+      <div className="App">
+        <header className="header">
+          <p className="student-name">Jehu Emilcar | Z23568962</p>
+          <h1>CS Concepts Flashcards</h1>
+          <p className="desc">You mastered all cards 🎉</p>
+          <div className="streaks">
+            <span>🏆 Longest streak: {longestStreak}</span>
+          </div>
+          <p className="count">Mastered: {mastered.length}</p>
+        </header>
+
+        <main className="main">
+          <button
+            className="reset-btn"
+            onClick={() => {
+              setMastered([]);
+              setOrder(defaultOrder);
+              setPos(0);
+              resetPerCard();
+              setCurrentStreak(0);
+              setLongestStreak(0);
+            }}
+          >
+            Reset Deck
+          </button>
+
+          <div className="mastered-list">
+            <h3>Mastered Cards</h3>
+            <ul>
+              {mastered.map((idx) => (
+                <li key={idx}>
+                  <strong>{cards[idx].category}:</strong> {cards[idx].question}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  const currentIndex = order[pos];
+  const currentCard = cards[currentIndex];
 
   return (
     <div className="App">
@@ -147,7 +213,7 @@ export default function App() {
 
         <div className="top-row">
           <p className="count">
-            Card {pos + 1} of {order.length}
+            Card {pos + 1} of {order.length} (Remaining)
           </p>
 
           <button className="shuffle-btn" onClick={handleShuffle}>
@@ -158,6 +224,7 @@ export default function App() {
         <div className="streaks">
           <span>🔥 Current streak: {currentStreak}</span>
           <span>🏆 Longest streak: {longestStreak}</span>
+          <span>✅ Mastered: {mastered.length}</span>
         </div>
       </header>
 
@@ -177,11 +244,14 @@ export default function App() {
             type="text"
             placeholder="Enter your guess..."
             value={guess}
-            onChange={(e) => {setGuess(e.target.value);
+            onChange={(e) => {
+              setGuess(e.target.value);
               setFeedback(null);
             }}
           />
-          <button onClick={handleSubmit} disabled={!guess.trim()}>Submit</button>
+          <button onClick={handleSubmit} disabled={!guess.trim()}>
+            Submit
+          </button>
         </div>
 
         {feedback === "correct" && <p className="correct">✅ Correct!</p>}
@@ -194,6 +264,25 @@ export default function App() {
           <button onClick={goNext} disabled={pos === order.length - 1}>
             Next
           </button>
+        </div>
+
+        <button className="master-btn" onClick={handleMaster}>
+          Mark as Mastered
+        </button>
+
+        <div className="mastered-list">
+          <h3>Mastered Cards</h3>
+          {mastered.length === 0 ? (
+            <p className="hint">No mastered cards yet.</p>
+          ) : (
+            <ul>
+              {mastered.map((idx) => (
+                <li key={idx}>
+                  <strong>{cards[idx].category}:</strong> {cards[idx].question}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </main>
     </div>

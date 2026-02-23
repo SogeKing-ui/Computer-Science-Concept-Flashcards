@@ -52,3 +52,29 @@ button:disabled {
   font-weight: 600;
   opacity: 0.9;
 }
+
+.master-btn {
+  border-radius: 10px;
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.mastered-list {
+  width: min(700px, 92vw);
+  margin-top: 12px;
+  text-align: left;
+  opacity: 0.95;
+}
+
+.mastered-list ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+.reset-btn {
+  border-radius: 10px;
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
