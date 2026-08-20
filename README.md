@@ -1,8 +1,5 @@
-# Web Development Project 3 - Flashcards Part 2
+#  Flashcards
 
-Submitted by: Jehu Emilcar
-
-Z#: Z23568962
 
 This web app: This web app is an interactive flashcard system designed to help users practice computer science concepts. Users can type guesses before flipping each card, receive feedback on their answers, move forward and backward through the deck, shuffle cards, track streaks, and remove mastered cards from the study pool. The app makes studying more engaging and efficient.
 
