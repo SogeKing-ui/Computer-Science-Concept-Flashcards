@@ -161,7 +161,7 @@ export default function App() {
     return (
       <div className="App">
         <header className="header">
-          <p className="student-name">Jehu Emilcar | Z23568962</p>
+          <p className="student-name">Jehu Emilcar</p>
           <h1>CS Concepts Flashcards</h1>
           <p className="desc">You mastered all cards 🎉</p>
           <div className="streaks">
@@ -206,7 +206,7 @@ export default function App() {
   return (
     <div className="App">
       <header className="header">
-        <p className="student-name">Jehu Emilcar | Z23568962</p>
+        <p className="student-name">Jehu Emilcar</p>
         <h1>CS Concepts Flashcards</h1>
 
         <p className="desc">Type your guess before flipping the card.</p>
